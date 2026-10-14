@@ -3,6 +3,10 @@
  * Free ADS-B Data Polling, N-Number to ICAO Hex Converter, and UI Controller
  */
 
+function getAppApiBase() {
+    return (typeof window !== 'undefined' && window.location && window.location.protocol === 'file:') ? 'http://localhost:8088' : '';
+}
+
 // ==========================================
 // FAA N-Number to 24-bit ICAO Hex Converter
 // ==========================================
@@ -634,8 +638,8 @@ class JetWatchApp {
             }
         }
 
-        // 2. Fetch from backend /api/lookup/ (with apiBase to support file:// and localhost)
-        const apiBase = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:8088' : '';
+        // 2. Fetch from backend /api/lookup/ (with apiBase to support file:// and web hosting)
+        const apiBase = getAppApiBase();
         try {
             const res = await fetch(`${apiBase}/api/lookup/${encodeURIComponent(clean)}`);
             if (res.ok) {
@@ -1491,7 +1495,7 @@ class JetWatchApp {
         historyModal.style.display = 'flex';
 
         try {
-            const apiBase = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:8088' : '';
+            const apiBase = getAppApiBase();
             const res = await fetch(`${apiBase}/api/history/${encodeURIComponent(cleanIdent)}`);
             if (res.ok) {
                 const data = await res.json();
@@ -1603,11 +1607,12 @@ class JetWatchApp {
 
         let observations = null;
 
-        // Attempt 0: Local server proxy (port 8088 - 100% reliable, zero CORS/filter blocks)
+        // Attempt 0: Server proxy (/api/hex/ - 100% reliable, zero CORS/filter blocks)
         try {
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2000);
-            const localUrl = `http://localhost:8088/api/hex/${hexList.join(',')}`;
+            const timeoutId = setTimeout(() => controller.abort(), 2500);
+            const apiBase = getAppApiBase();
+            const localUrl = `${apiBase}/api/hex/${hexList.join(',')}`;
             const res = await fetch(localUrl, { signal: controller.signal, cache: 'no-store' });
             clearTimeout(timeoutId);
             if (res.ok) {
@@ -1665,7 +1670,7 @@ class JetWatchApp {
 
         if (missingPlanes.length > 0) {
             try {
-                const apiBase = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:8088' : '';
+                const apiBase = getAppApiBase();
                 const callsignResults = await Promise.all(missingPlanes.map(async plane => {
                     const q = (plane.tail || plane.icao || '').trim().replace(/\s+/g, '');
                     if (!q) return null;
@@ -1826,7 +1831,7 @@ class JetWatchApp {
 
         try {
             // First attempt: live node server proxy route (always prioritizes current active leg)
-            const apiBase = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:8088' : '';
+            const apiBase = getAppApiBase();
             let res = await fetch(`${apiBase}/api/route/${target}`, { cache: 'no-store' }).catch(() => null);
 
             // Fallback: direct adsbdb or allorigins proxy
@@ -2962,7 +2967,7 @@ class JetWatchApp {
         if (moreWrap) moreWrap.innerHTML = '';
 
         try {
-            const apiBase = (window.location.protocol === 'file:' || !window.location.port) ? 'http://localhost:8088' : '';
+            const apiBase = getAppApiBase();
             const res = await fetch(`${apiBase}/api/history/${encodeURIComponent(ident)}`);
             if (res.ok) {
                 const data = await res.json();
@@ -3610,7 +3615,7 @@ class JetWatchApp {
         let atcData = this.atcFreqCache.get(airportCode);
         if (!atcData) {
             try {
-                const apiBase = (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '8088')) ? 'http://localhost:8088' : '';
+                const apiBase = getAppApiBase();
                 const res = await fetch(`${apiBase}/api/atc/frequencies/${encodeURIComponent(airportCode)}`);
                 const json = await res.json();
                 if (json && json.success && json.data) {
@@ -3804,7 +3809,7 @@ class JetWatchApp {
         }
         if (playBtn) playBtn.disabled = false;
 
-        const apiBase = (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '8088')) ? 'http://localhost:8088' : '';
+        const apiBase = getAppApiBase();
         audio.src = `${apiBase}/api/atc/stream/${encodeURIComponent(mount)}?t=${Date.now()}`;
         audio.volume = this.atcVolume;
         audio.play().catch(err => {
