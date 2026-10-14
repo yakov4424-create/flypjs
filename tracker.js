@@ -93,6 +93,8 @@ function formatHex(offset) {
 const KNOWN_ICAO_LOOKUP = {
     'N821SS': 'ab3633',
     'N787FZ': 'aaa856',
+    'N429FX': 'a51da1',
+    'LXJ429': 'a51da1',
     'VP-CZS': '400294',
     'N7965M': 'aacd52',
     '4X-ISR': '7386c0',
@@ -142,6 +144,8 @@ const KNOWN_MODELS = {
     '4X-ISR': 'Gulfstream G280',
     'N185QS': 'Bombardier Global 7500',
     'N327FX': 'Embraer Praetor 500',
+    'N429FX': 'Embraer Praetor 500',
+    'LXJ429': 'Embraer Praetor 500',
     'N379FX': 'Embraer Phenom 300',
     'LXJ379': 'Embraer Phenom 300',
     'N933QS': 'Cessna Citation Latitude',
@@ -232,8 +236,71 @@ const KNOWN_ROUTES = {
     '9H-VISTA': {
         origin: { iata: 'LBG', city: 'Paris (Le Bourget)', lat: 48.9695, lon: 2.4415 },
         destination: { iata: 'CONFIDENTIAL', city: 'Private / Unlisted Arrival', lat: null, lon: null, isConfidential: true }
+    },
+    'N787FZ': {
+        origin: { iata: 'TEB', city: 'Teterboro (New York)', lat: 40.8501, lon: -74.0608 },
+        destination: { iata: 'CONFIDENTIAL', city: 'Private / Unlisted Arrival', lat: null, lon: null, isConfidential: true }
+    },
+    'N429FX': {
+        origin: { iata: 'HPN', city: 'White Plains (New York)', lat: 41.0670, lon: -73.7076 },
+        destination: { iata: 'CONFIDENTIAL', city: 'Private / Unlisted Arrival', lat: null, lon: null, isConfidential: true }
+    },
+    'LXJ429': {
+        origin: { iata: 'HPN', city: 'White Plains (New York)', lat: 41.0670, lon: -73.7076 },
+        destination: { iata: 'CONFIDENTIAL', city: 'Private / Unlisted Arrival', lat: null, lon: null, isConfidential: true }
     }
 };
+
+// ==========================================
+// Comprehensive Major VIP & Regional Airports Database
+// ==========================================
+const MAJOR_VIP_AIRPORTS = [
+    { iata: 'TEB', icao: 'KTEB', city: 'Teterboro, NJ', name: 'Teterboro Executive', lat: 40.8501, lon: -74.0608 },
+    { iata: 'HPN', icao: 'KHPN', city: 'White Plains, NY', name: 'Westchester County', lat: 41.0670, lon: -73.7076 },
+    { iata: 'EWR', icao: 'KEWR', city: 'Newark, NJ', name: 'Newark Liberty Intl', lat: 40.6895, lon: -74.1745 },
+    { iata: 'JFK', icao: 'KJFK', city: 'New York, NY', name: 'John F. Kennedy Intl', lat: 40.6399, lon: -73.7787 },
+    { iata: 'LGA', icao: 'KLGA', city: 'New York, NY', name: 'LaGuardia', lat: 40.7769, lon: -73.8740 },
+    { iata: 'FRG', icao: 'KFRG', city: 'Farmingdale, NY', name: 'Republic Airport', lat: 40.7288, lon: -73.4134 },
+    { iata: 'MMU', icao: 'KMMU', city: 'Morristown, NJ', name: 'Morristown Municipal', lat: 40.7994, lon: -74.4149 },
+    { iata: 'BED', icao: 'KBED', city: 'Bedford, MA', name: 'Hanscom Field', lat: 42.4700, lon: -71.2890 },
+    { iata: 'BOS', icao: 'KBOS', city: 'Boston, MA', name: 'Boston Logan', lat: 42.3656, lon: -71.0096 },
+    { iata: 'IAD', icao: 'KIAD', city: 'Washington, DC', name: 'Dulles International', lat: 38.9531, lon: -77.4565 },
+    { iata: 'DCA', icao: 'KDCA', city: 'Washington, DC', name: 'Reagan National', lat: 38.8512, lon: -77.0402 },
+    { iata: 'BWI', icao: 'KBWI', city: 'Baltimore, MD', name: 'Baltimore/Washington', lat: 39.1754, lon: -76.6683 },
+    { iata: 'SHD', icao: 'KSHD', city: 'Staunton/Weyers Cave, VA', name: 'Shenandoah Valley', lat: 38.2638, lon: -78.8964 },
+    { iata: 'CHO', icao: 'KCHO', city: 'Charlottesville, VA', name: 'Charlottesville-Albemarle', lat: 38.1386, lon: -78.4529 },
+    { iata: 'ROA', icao: 'KROA', city: 'Roanoke, VA', name: 'Roanoke-Blacksburg', lat: 37.3255, lon: -79.9754 },
+    { iata: 'RIC', icao: 'KRIC', city: 'Richmond, VA', name: 'Richmond International', lat: 37.5052, lon: -77.3197 },
+    { iata: 'CLT', icao: 'KCLT', city: 'Charlotte, NC', name: 'Charlotte Douglas', lat: 35.2140, lon: -80.9431 },
+    { iata: 'RDU', icao: 'KRDU', city: 'Raleigh/Durham, NC', name: 'Raleigh-Durham', lat: 35.8801, lon: -78.7880 },
+    { iata: 'ATL', icao: 'KATL', city: 'Atlanta, GA', name: 'Hartsfield-Jackson Atlanta', lat: 33.6407, lon: -84.4277 },
+    { iata: 'PDK', icao: 'KPDK', city: 'Atlanta, GA', name: 'DeKalb-Peachtree Executive', lat: 33.8756, lon: -84.3020 },
+    { iata: 'MIA', icao: 'KMIA', city: 'Miami, FL', name: 'Miami International', lat: 25.7959, lon: -80.2870 },
+    { iata: 'OPF', icao: 'KOPF', city: 'Miami, FL', name: 'Miami-Opa Locka Executive', lat: 25.9070, lon: -80.2784 },
+    { iata: 'FLL', icao: 'KFLL', city: 'Fort Lauderdale, FL', name: 'Fort Lauderdale-Hollywood', lat: 26.0742, lon: -80.1506 },
+    { iata: 'FXE', icao: 'KFXE', city: 'Fort Lauderdale, FL', name: 'Fort Lauderdale Executive', lat: 26.1973, lon: -80.1707 },
+    { iata: 'PBI', icao: 'KPBI', city: 'West Palm Beach, FL', name: 'Palm Beach International', lat: 26.6832, lon: -80.0956 },
+    { iata: 'APF', icao: 'KAPF', city: 'Naples, FL', name: 'Naples Airport', lat: 26.1525, lon: -81.7756 },
+    { iata: 'ORD', icao: 'KORD', city: 'Chicago, IL', name: "O'Hare International", lat: 41.9742, lon: -87.9073 },
+    { iata: 'MDW', icao: 'KMDW', city: 'Chicago, IL', name: 'Chicago Midway', lat: 41.7868, lon: -87.7522 },
+    { iata: 'PWK', icao: 'KPWK', city: 'Chicago, IL', name: 'Chicago Executive', lat: 42.1142, lon: -87.9015 },
+    { iata: 'DAL', icao: 'KDAL', city: 'Dallas, TX', name: 'Dallas Love Field', lat: 32.8471, lon: -96.8518 },
+    { iata: 'DFW', icao: 'KDFW', city: 'Dallas/Fort Worth, TX', name: 'DFW International', lat: 32.8998, lon: -97.0403 },
+    { iata: 'HOU', icao: 'KHOU', city: 'Houston, TX', name: 'William P. Hobby', lat: 29.6454, lon: -95.2789 },
+    { iata: 'LAS', icao: 'KLAS', city: 'Las Vegas, NV', name: 'Harry Reid International', lat: 36.0840, lon: -115.1537 },
+    { iata: 'VGT', icao: 'KVGT', city: 'Las Vegas, NV', name: 'North Las Vegas', lat: 36.2107, lon: -115.1944 },
+    { iata: 'VNY', icao: 'KVNY', city: 'Van Nuys, CA', name: 'Van Nuys Airport', lat: 34.2098, lon: -118.4899 },
+    { iata: 'LAX', icao: 'KLAX', city: 'Los Angeles, CA', name: 'Los Angeles International', lat: 33.9416, lon: -118.4085 },
+    { iata: 'SNA', icao: 'KSNA', city: 'Santa Ana, CA', name: 'John Wayne Airport', lat: 33.6757, lon: -117.8674 },
+    { iata: 'SFO', icao: 'KSFO', city: 'San Francisco, CA', name: 'San Francisco International', lat: 37.6213, lon: -122.3790 },
+    { iata: 'OAK', icao: 'KOAK', city: 'Oakland, CA', name: 'Oakland International', lat: 37.7213, lon: -122.2207 },
+    { iata: 'SJC', icao: 'KSJC', city: 'San Jose, CA', name: 'San Jose Mineta', lat: 37.3619, lon: -121.9290 },
+    { iata: 'TLV', icao: 'LLBG', city: 'Tel Aviv, Israel', name: 'Ben Gurion', lat: 32.0094, lon: 34.8856 },
+    { iata: 'LBG', icao: 'LFPB', city: 'Paris, France', name: 'Paris Le Bourget', lat: 48.9695, lon: 2.4415 },
+    { iata: 'FAB', icao: 'EGLF', city: 'Farnborough, UK', name: 'Farnborough Airport', lat: 51.2758, lon: -0.7763 },
+    { iata: 'GVA', icao: 'LSGG', city: 'Geneva, Switzerland', name: 'Geneva Airport', lat: 46.2370, lon: 6.1091 },
+    { iata: 'ZRH', icao: 'LSZH', city: 'Zurich, Switzerland', name: 'Zurich Airport', lat: 47.4582, lon: 8.5555 }
+];
 
 // ==========================================
 // Default Starter VIP Aircraft Watchlist
@@ -1232,7 +1299,15 @@ class JetWatchApp {
         }
         const closeSelectedBtn = document.getElementById('close-selected-btn');
         if (closeSelectedBtn) {
-            closeSelectedBtn.addEventListener('click', () => this.deselectAircraft());
+            closeSelectedBtn.addEventListener('click', () => {
+                this.deselectAircraft();
+                const appLayout = document.querySelector('.app-layout');
+                if (appLayout && window.innerWidth <= 860) {
+                    appLayout.classList.add('sidebar-collapsed');
+                    const toggle = document.getElementById('sidebar-edge-toggle');
+                    if (toggle) toggle.classList.add('collapsed');
+                }
+            });
         }
 
         // FR24 Accordion Toggles (Telemetry Specs, Recent Flights, & Live ATC)
@@ -2439,6 +2514,14 @@ class JetWatchApp {
             if (toggle) toggle.classList.remove('collapsed');
         }
 
+        // Always collapse Recent Flights accordion by default when opening any aircraft
+        const accHistBtn = document.getElementById('acc-btn-history');
+        const accHistBody = document.getElementById('acc-body-history');
+        if (accHistBtn && accHistBody) {
+            accHistBtn.classList.remove('active');
+            accHistBody.classList.add('collapsed');
+        }
+
         this.renderAircraftList();
         this.updateSelectedCard();
 
@@ -2545,31 +2628,47 @@ class JetWatchApp {
             };
         }
 
-        // 5. VistaJet
-        if (text.includes('VISTAJET') || text.includes('VJT') || text.includes('GLOBAL 7500') || text.includes('GL7') || text.includes('VISTA')) {
+        // 5. N787FZ (Joel Landau / Maxsip Telecom Global 7500 - NOT VistaJet)
+        if (text.includes('787FZ') || text.includes('AAA856')) {
             return {
-                url: 'https://t.plnspttrs.net/20655/1553270_3cf079f4cd_280.jpg',
-                photographer: 'Planespotters.net · Global 7500'
+                url: 'https://t.plnspttrs.net/01048/1739585_3e9898ea21_280.jpg',
+                photographer: 'Jonas Evrard · Maxsip Telecom Global 7500 (N787FZ)'
             };
         }
 
-        // 6. Flexjet Praetor 500 (N327FX) - MUST check Praetor before generic Flexjet
-        if (text.includes('327FX') || text.includes('LXJ327') || text.includes('PRAETOR') || text.includes('P500') || text.includes('500PR')) {
+        // 6. Flexjet Praetor 500 (N429FX / LXJ429)
+        if (text.includes('429FX') || text.includes('LXJ429') || text.includes('A51DA1')) {
+            return {
+                url: 'https://t.plnspttrs.net/40926/1931056_046c3dcac6_280.jpg',
+                photographer: 'Tran Nguyen An Binh · Flexjet Praetor 500 (N429FX)'
+            };
+        }
+
+        // 7. Flexjet Praetor 500 (N327FX / LXJ327 / E545)
+        if (text.includes('327FX') || text.includes('LXJ327') || text.includes('A388E4') || text.includes('PRAETOR') || text.includes('P500') || text.includes('500PR') || text.includes('E545')) {
             return {
                 url: 'https://t.plnspttrs.net/40004/1678189_9cf8d20aa8_280.jpg',
                 photographer: 'Joshua Bully · Flexjet Praetor 500 (N327FX)'
             };
         }
 
-        // 7. Flexjet Phenom 300 (N379FX) - Distinct from Praetor 500
-        if (text.includes('379FX') || text.includes('LXJ379') || text.includes('PHENOM') || text.includes('E55P') || text.includes('FLEXJET') || text.includes('LXJ')) {
+        // 8. Flexjet Phenom 300 (N379FX / LXJ379 / E55P)
+        if (text.includes('379FX') || text.includes('LXJ379') || text.includes('A455CD') || text.includes('PHENOM') || text.includes('E55P') || text.includes('FLEXJET') || text.includes('LXJ')) {
             return {
                 url: 'https://t.plnspttrs.net/19005/1534346_f5ac334126_280.jpg',
                 photographer: 'Jacob Reppert · Flexjet Phenom 300 (N379FX)'
             };
         }
 
-        // 8. Gulfstream VIP Jets
+        // 9. VistaJet (ONLY if VJT callsign or VistaJet operator)
+        if (text.includes('VISTAJET') || text.includes('VJT') || text.includes('9H-VISTA') || text.includes('9HVISTA') || text.includes('4D23AB')) {
+            return {
+                url: 'https://t.plnspttrs.net/20655/1553270_3cf079f4cd_280.jpg',
+                photographer: 'Planespotters.net · VistaJet Global 7500'
+            };
+        }
+
+        // 10. Gulfstream VIP Jets
         if (text.includes('G800') || text.includes('380EE')) {
             return {
                 url: 'https://t.plnspttrs.net/01817/1956068_0924971417_280.jpg',
@@ -2588,18 +2687,20 @@ class JetWatchApp {
                 photographer: 'Planespotters.net · Gulfstream G650'
             };
         }
-        if (text.includes('GLOBAL') || text.includes('117TF') || text.includes('185QS')) {
+
+        // 11. Generic Bombardier Global 7500 (Executive factory livery C-GLBR, NOT VistaJet)
+        if (text.includes('GLOBAL') || text.includes('7500') || text.includes('GL75') || text.includes('GL7T') || text.includes('117TF') || text.includes('185QS')) {
             return {
-                url: 'https://t.plnspttrs.net/24702/1947296_f6a19e2565_280.jpg',
-                photographer: 'Planespotters.net · Global 7500'
+                url: 'https://t.plnspttrs.net/17182/865141_d9eb45384c_280.jpg',
+                photographer: 'CJMoeser · Bombardier Global 7500 (Executive)'
             };
         }
 
-        // 9. Generic Boeing 787
-        if (text.includes('787') || text.includes('DREAMLINER') || text.includes('787FZ')) {
+        // 12. Generic Boeing 787 (Clean airliner, never N787FZ)
+        if ((text.includes('787') || text.includes('DREAMLINER') || text.includes('B78')) && !text.includes('FZ')) {
             return {
-                url: 'https://t.plnspttrs.net/01048/1739585_3e9898ea21_280.jpg',
-                photographer: 'Planespotters.net · Boeing 787'
+                url: 'https://t.plnspttrs.net/36104/1988759_2904d5f6c9_280.jpg',
+                photographer: 'Niclas Karich · Boeing 787'
             };
         }
 
@@ -2672,7 +2773,8 @@ class JetWatchApp {
         }
 
         try {
-            const res = await fetch(`/api/photo/${encodeURIComponent(queryKey)}`);
+            const apiBase = getAppApiBase();
+            const res = await fetch(`${apiBase}/api/photo/${encodeURIComponent(queryKey)}`);
             const json = await res.json();
             if (json && json.success && json.photo && json.photo.url) {
                 this.photoCache.set(queryKey, json.photo);
@@ -2781,6 +2883,90 @@ class JetWatchApp {
         return `UTC ${sign}${padOff}:00`;
     }
 
+    findNearestAirport(lat, lon, maxDistanceNm = 80) {
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+        let bestApt = null;
+        let minDistance = Infinity;
+
+        for (const apt of MAJOR_VIP_AIRPORTS) {
+            const dLat = (apt.lat - lat) * 60; // 1 deg lat = 60 nm
+            const dLon = (apt.lon - lon) * Math.cos(lat * Math.PI / 180) * 60;
+            const dist = Math.hypot(dLat, dLon);
+            if (dist < minDistance && dist <= maxDistanceNm) {
+                minDistance = dist;
+                bestApt = apt;
+            }
+        }
+        return bestApt;
+    }
+
+    inferRouteForAircraft(plane) {
+        if (!plane) return null;
+        const cleanTail = (plane.actualTail || plane.tail || '').toUpperCase().trim();
+        const callsign = (plane.liveData && plane.liveData.callsign ? plane.liveData.callsign.toUpperCase().trim() : '');
+
+        // 1. Direct match in pre-seeded known routes
+        if (cleanTail && KNOWN_ROUTES[cleanTail]) {
+            return JSON.parse(JSON.stringify(KNOWN_ROUTES[cleanTail]));
+        }
+        if (callsign && KNOWN_ROUTES[callsign]) {
+            return JSON.parse(JSON.stringify(KNOWN_ROUTES[callsign]));
+        }
+
+        // 2. Trajectory-based Departure Airport Inference (from live ADS-B radar trail)
+        const trackKey = (plane.icao || plane.tail || '').toLowerCase();
+        const trail = this.trailHistory && this.trailHistory.get(trackKey);
+        let departureApt = null;
+
+        if (trail && Array.isArray(trail) && trail.length > 0) {
+            const startPoint = trail[0]; // [lon, lat, alt]
+            if (Array.isArray(startPoint) && Number.isFinite(startPoint[1]) && Number.isFinite(startPoint[0])) {
+                departureApt = this.findNearestAirport(startPoint[1], startPoint[0], 90);
+            }
+        }
+
+        // 3. Reverse vector along flight heading
+        if (!departureApt && plane.liveData && Number.isFinite(plane.liveData.lat) && Number.isFinite(plane.liveData.lon)) {
+            const heading = Number.isFinite(plane.liveData.track) ? plane.liveData.track : null;
+            if (heading !== null) {
+                const backHeading = (heading + 180) % 360;
+                const rad = backHeading * Math.PI / 180;
+                for (const distDeg of [0.8, 1.8, 2.8, 3.8]) {
+                    const estLat = plane.liveData.lat + distDeg * Math.cos(rad);
+                    const estLon = plane.liveData.lon + distDeg * Math.sin(rad);
+                    const candApt = this.findNearestAirport(estLat, estLon, 70);
+                    if (candApt) {
+                        departureApt = candApt;
+                        break;
+                    }
+                }
+            }
+            if (!departureApt) {
+                departureApt = this.findNearestAirport(plane.liveData.lat, plane.liveData.lon, 300);
+            }
+        }
+
+        if (departureApt) {
+            return {
+                origin: {
+                    iata: departureApt.iata,
+                    city: departureApt.city,
+                    name: departureApt.name,
+                    lat: departureApt.lat,
+                    lon: departureApt.lon
+                },
+                destination: {
+                    iata: 'VIP',
+                    city: 'CONFIDENTIAL',
+                    isConfidential: true
+                },
+                inferred: true
+            };
+        }
+
+        return null;
+    }
+
     updateSelectedCard() {
         const card = document.getElementById('selected-card');
         const plane = this.aircraft.find(a => a.id === this.selectedAircraftId);
@@ -2877,6 +3063,11 @@ class JetWatchApp {
 
         // 2. Route info & Flightradar24 display
         const routeContainer = document.getElementById('sel-route-container');
+        if ((!plane.route || !plane.route.origin || !plane.route.destination) && isAir) {
+            const inferred = this.inferRouteForAircraft(plane);
+            if (inferred) plane.route = inferred;
+        }
+
         if (plane.route && plane.route.origin && plane.route.destination) {
             routeContainer.hidden = false;
             document.getElementById('sel-orig-code').textContent = plane.route.origin.iata || 'ORIG';
@@ -3702,8 +3893,8 @@ class JetWatchApp {
 
         // If currently playing, retune stream to newly selected channel
         if (this.isAtcPlaying) {
-            const mount = selectedChannel.mount || this.currentAtcData.streamMount;
-            if (selectedChannel.live && mount) {
+            const mount = (selectedChannel && selectedChannel.live) ? selectedChannel.mount : null;
+            if (mount) {
                 this.playAtcStream(mount);
             } else {
                 this.stopAtcStream();
@@ -3719,17 +3910,17 @@ class JetWatchApp {
         const badge = document.getElementById('atc-status-badge');
 
         if (labelEl) {
-            const typeLabels = { TWR: 'TOWER', GND: 'GROUND', APP: 'APPROACH', ATIS: 'ATIS', DEP: 'DEPARTURE' };
+            const typeLabels = { TWR: 'TOWER', GND: 'GROUND', APP: 'APPROACH', ATIS: 'ATIS', DEP: 'DEPARTURE', METRO: 'METRO TWR' };
             labelEl.textContent = typeLabels[channel.type] || channel.type;
         }
         if (freqEl) {
             freqEl.textContent = channel.freq || '---.---';
         }
 
-        const hasLive = !!(channel.live && (channel.mount || (this.currentAtcData && this.currentAtcData.streamMount)));
+        const hasLive = !!(channel && channel.live && channel.mount);
         if (playBtn) {
             playBtn.disabled = !hasLive;
-            playBtn.title = hasLive ? 'Listen live to ATC audio' : 'Live audio stream unavailable for this channel/airspace';
+            playBtn.title = hasLive ? `Listen live to ${channel.label || channel.type}` : (channel.note || 'Live audio stream unavailable for this channel/airspace');
         }
 
         if (badge && !this.isAtcPlaying) {
@@ -3737,7 +3928,7 @@ class JetWatchApp {
                 badge.textContent = 'TUNED';
                 badge.className = 'atc-status-badge standby';
             } else {
-                badge.textContent = (this.currentAtcData && (this.currentAtcData.restricted || this.currentAtcData.note)) ? 'OFFICIAL FREQS' : 'OFFLINE';
+                badge.textContent = (channel && channel.note) ? 'OFFLINE' : ((this.currentAtcData && (this.currentAtcData.restricted || this.currentAtcData.note)) ? 'OFFICIAL FREQS' : 'OFFLINE');
                 badge.className = 'atc-status-badge standby';
             }
         }
@@ -3749,7 +3940,7 @@ class JetWatchApp {
         } else {
             if (!this.currentAtcData || !this.currentAtcData.frequencies) return;
             const channel = this.currentAtcData.frequencies.find(f => f.type === this.currentAtcChannelType) || this.currentAtcData.frequencies[0];
-            const mount = (channel && channel.mount) ? channel.mount : (this.currentAtcData && this.currentAtcData.streamMount);
+            const mount = (channel && channel.live) ? channel.mount : null;
             if (mount) {
                 this.playAtcStream(mount);
             }

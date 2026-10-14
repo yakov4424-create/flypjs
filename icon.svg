@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#141c2e"/>
+      <stop offset="50%" stop-color="#0a0f1d"/>
+      <stop offset="100%" stop-color="#050811"/>
+    </radialGradient>
+    <linearGradient id="emblemGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="65%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <filter id="emblemShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000000" flood-opacity="0.45"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#38bdf8" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- App Icon Squircle Background -->
+  <rect width="512" height="512" rx="118" fill="url(#bgGlow)"/>
+  <rect width="508" height="508" x="2" y="2" rx="116" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2"/>
+
+  <!-- Subtle Executive Compass Ring -->
+  <circle cx="256" cy="256" r="216" fill="none" stroke="rgba(56, 189, 248, 0.04)" stroke-width="1.5"/>
+
+  <!-- Tail Plane Emblem -->
+  <g filter="url(#emblemShadow)">
+    <path d="M 111.72 118.29 L 173.76 118.29 C 185.04 118.29 194.44 122.99 201.02 129.57 C 257.42 185.97 304.42 232.97 342.02 263.05 C 367.40 282.79 390.90 294.07 415.34 300.65 L 239.56 300.65 C 203.84 300.65 185.04 282.79 176.58 259.29 L 111.72 118.29 Z" fill="url(#emblemGrad)"/>
+    <path d="M 226.40 315.69 L 332.62 315.69 C 280.92 334.49 217.00 367.39 160.60 392.77 C 175.64 362.69 198.20 336.37 226.40 315.69 Z" fill="url(#emblemGrad)"/>
+  </g>
+</svg>

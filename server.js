@@ -72,6 +72,11 @@ const REG_TO_CALLSIGN = {
     'N379FX': 'LXJ379',
     'LXJ379': 'LXJ379',
     'A455CD': 'LXJ379',
+    'N429FX': 'LXJ429',
+    'LXJ429': 'LXJ429',
+    'A51DA1': 'LXJ429',
+    'N787FZ': 'N787FZ',
+    'AAA856': 'N787FZ',
     'N595QS': 'EJA595',
     'EJA595': 'EJA595',
     'A7B169': 'EJA595',
@@ -89,6 +94,9 @@ const KNOWN_HEX = {
     '9H-VISTA': '4d23ab',
     '9HVISTA': '4d23ab',
     'VJT289': '4d23ab',
+    'N787FZ': 'aaa856',
+    'N429FX': 'a51da1',
+    'LXJ429': 'a51da1',
     'N379FX': 'a455cd',
     'LXJ379': 'a455cd',
     'N595QS': 'a7b169',
@@ -888,6 +896,8 @@ const KNOWN_REGISTRY = {
     'N327FX': { icao: 'a388e4', model: 'Embraer Praetor 500', name: 'Flexjet', tail: 'N327FX' },
     'N379FX': { icao: 'a455cd', model: 'Embraer Phenom 300', name: 'Flexjet', tail: 'N379FX' },
     'LXJ379': { icao: 'a455cd', model: 'Embraer Phenom 300', name: 'Flexjet', tail: 'N379FX' },
+    'N429FX': { icao: 'a51da1', model: 'Embraer Praetor 500', name: 'Flexjet', tail: 'N429FX' },
+    'LXJ429': { icao: 'a51da1', model: 'Embraer Praetor 500', name: 'Flexjet', tail: 'N429FX' },
     'N933QS': { icao: 'acf23d', model: 'Cessna Citation Latitude', name: 'NetJets', tail: 'N933QS' },
     'N595QS': { icao: 'a7b169', model: 'Cessna Citation Latitude', name: 'NetJets', tail: 'N595QS' },
     'EJA595': { icao: 'a7b169', model: 'Cessna Citation Latitude', name: 'NetJets', tail: 'N595QS' },
@@ -1224,10 +1234,12 @@ const AIRPORT_ATC_DATA = {
         name: 'Teterboro Executive',
         city: 'Teterboro, NJ',
         frequencies: [
-            { type: 'TWR', label: 'Tower (119.5)', freq: '119.500', mount: 'kewr_twr', live: true },
-            { type: 'GND', label: 'Ground (121.9)', freq: '121.900', mount: 'kewr_twr', live: true },
-            { type: 'APP', label: 'NY Approach (EWR)', freq: '127.600', mount: 'kewr_twr', live: true },
-            { type: 'ATIS', label: 'ATIS', freq: '114.200', mount: null, live: false },
+            { type: 'TWR', label: 'Teterboro Tower (119.5)', freq: '119.500', mount: null, live: false, note: 'Local scanner feed offline on LiveATC' },
+            { type: 'TWR', label: 'Teterboro Tower (120.05)', freq: '120.050', mount: null, live: false, note: 'Local scanner feed offline on LiveATC' },
+            { type: 'GND', label: 'Teterboro Ground (121.9)', freq: '121.900', mount: null, live: false },
+            { type: 'APP', label: 'NY Approach (TEB/EWR Sector)', freq: '127.600', mount: 'kewr_twr', live: true, note: 'Area Radar Vectoring' },
+            { type: 'METRO', label: 'Newark Tower (EWR Adjacent)', freq: '118.300', mount: 'kewr_twr', live: true, note: 'Newark Airspace Tower' },
+            { type: 'ATIS', label: 'Teterboro ATIS (114.2)', freq: '114.200', mount: null, live: false },
             { type: 'DEL', label: 'Clearance Delivery', freq: '128.050', mount: null, live: false }
         ],
         streamMount: 'kewr_twr'
@@ -1454,14 +1466,15 @@ const AIRPORT_ATC_DATA = {
         name: 'Ben Gurion Intl',
         city: 'Tel Aviv, Israel',
         frequencies: [
-            { type: 'TWR', label: 'Tower (132.1)', freq: '132.100', mount: null, live: false },
-            { type: 'TWR', label: 'Tower Secondary', freq: '120.500', mount: null, live: false },
-            { type: 'GND', label: 'Ground', freq: '129.200', mount: null, live: false },
-            { type: 'APP', label: 'Tel Aviv Approach', freq: '120.500', mount: null, live: false },
+            { type: 'TWR', label: 'Tower (134.6)', freq: '134.600', mount: 'llbg2', live: true },
+            { type: 'TWR', label: 'Tower Secondary (119.35)', freq: '119.350', mount: 'llbg2', live: true },
+            { type: 'GND', label: 'Ground (121.9)', freq: '121.900', mount: 'llbg2', live: true },
+            { type: 'APP', label: 'Approach (124.4)', freq: '124.400', mount: 'llbg2', live: true },
             { type: 'ATIS', label: 'ATIS', freq: '134.025', mount: null, live: false }
         ],
-        restricted: true,
-        note: 'Live web streaming restricted by local civil communications law'
+        streamMount: 'llbg2',
+        restricted: false,
+        note: 'Live audio active: LLBG Gnd/Twr/App composite feed'
     },
     'TLV': 'LLBG',
 
@@ -1740,13 +1753,25 @@ const MODEL_PHOTO_CATALOG = {
         url: 'https://t.plnspttrs.net/46197/1982702_5a3c777897_280.jpg',
         photographer: 'PEK.SkyDreamer · Boeing 777'
     },
-    'B789': {
+    'N787FZ': {
         url: 'https://t.plnspttrs.net/01048/1739585_3e9898ea21_280.jpg',
-        photographer: 'Planespotters.net · Boeing 787-9'
+        photographer: 'Jonas Evrard · Maxsip Telecom Global 7500 (N787FZ)'
+    },
+    'N429FX': {
+        url: 'https://t.plnspttrs.net/40926/1931056_046c3dcac6_280.jpg',
+        photographer: 'Tran Nguyen An Binh · Flexjet Praetor 500 (N429FX)'
+    },
+    'LXJ429': {
+        url: 'https://t.plnspttrs.net/40926/1931056_046c3dcac6_280.jpg',
+        photographer: 'Tran Nguyen An Binh · Flexjet Praetor 500 (N429FX)'
+    },
+    'B789': {
+        url: 'https://t.plnspttrs.net/36104/1988759_2904d5f6c9_280.jpg',
+        photographer: 'Niclas Karich · Boeing 787'
     },
     'B788': {
-        url: 'https://t.plnspttrs.net/01048/1739585_3e9898ea21_280.jpg',
-        photographer: 'Planespotters.net · Boeing 787-8'
+        url: 'https://t.plnspttrs.net/36104/1988759_2904d5f6c9_280.jpg',
+        photographer: 'Niclas Karich · Boeing 787'
     },
     'A321': {
         url: 'https://t.plnspttrs.net/02822/1982016_fcaa8a8124_280.jpg',
@@ -1757,12 +1782,12 @@ const MODEL_PHOTO_CATALOG = {
         photographer: 'Jacob Reppert · Flexjet Phenom 300'
     },
     'GL75': {
-        url: 'https://t.plnspttrs.net/20655/1553270_3cf079f4cd_280.jpg',
-        photographer: 'Planespotters.net · Global 7500'
+        url: 'https://t.plnspttrs.net/17182/865141_d9eb45384c_280.jpg',
+        photographer: 'CJMoeser · Bombardier Global 7500 (Executive)'
     },
     'GL7T': {
-        url: 'https://t.plnspttrs.net/20655/1553270_3cf079f4cd_280.jpg',
-        photographer: 'Planespotters.net · Global 7500'
+        url: 'https://t.plnspttrs.net/17182/865141_d9eb45384c_280.jpg',
+        photographer: 'CJMoeser · Bombardier Global 7500 (Executive)'
     },
     'GLF6': {
         url: 'https://t.plnspttrs.net/47373/1015232_3577405127_280.jpg',
@@ -1782,20 +1807,22 @@ function getFallbackPhoto(query) {
     if (!query) return null;
     const q = query.trim().toUpperCase();
     if (MODEL_PHOTO_CATALOG[q]) return MODEL_PHOTO_CATALOG[q];
+    if (q === 'N787FZ' || q.includes('787FZ') || q === 'AAA856') return MODEL_PHOTO_CATALOG['N787FZ'];
+    if (q === 'LXJ429' || q === 'N429FX' || q.includes('429FX') || q === 'A51DA1') return MODEL_PHOTO_CATALOG['N429FX'];
+    if (q === 'LXJ327' || q === 'N327FX' || q.includes('PRAETOR') || q.includes('P500') || q.includes('327FX')) return MODEL_PHOTO_CATALOG['N327FX'];
+    if (q === 'LXJ379' || q === 'N379FX' || q.includes('PHENOM') || q.includes('E55P') || q.includes('379FX')) return MODEL_PHOTO_CATALOG['N379FX'];
     if (q.startsWith('UAL') || q.startsWith('UA') || q.includes('UNITED')) return MODEL_PHOTO_CATALOG['UAL85'];
     if (q.startsWith('AFR') || q.startsWith('AF') || q.includes('AIR FRANCE')) return MODEL_PHOTO_CATALOG['AFR'];
     if (q.startsWith('ELY') || q.startsWith('LY') || q.includes('EL AL')) return MODEL_PHOTO_CATALOG['LY4'];
     if (q.startsWith('DAL') || q.startsWith('DL') || q.includes('DELTA')) return MODEL_PHOTO_CATALOG['DAL887'];
     if (q.startsWith('VJT') || q.includes('VISTAJET')) return MODEL_PHOTO_CATALOG['VJT289'];
-    if (q === 'LXJ327' || q === 'N327FX' || q.includes('PRAETOR') || q.includes('P500') || q.includes('327FX')) return MODEL_PHOTO_CATALOG['N327FX'];
-    if (q === 'LXJ379' || q === 'N379FX' || q.includes('PHENOM') || q.includes('E55P') || q.includes('379FX')) return MODEL_PHOTO_CATALOG['N379FX'];
     if (q.startsWith('LXJ') || q.includes('FLEXJET')) return MODEL_PHOTO_CATALOG['N379FX'];
-    if (q.includes('787')) return MODEL_PHOTO_CATALOG['B788'];
+    if (q.includes('787') && !q.includes('FZ')) return MODEL_PHOTO_CATALOG['B788'];
     if (q.includes('777')) return MODEL_PHOTO_CATALOG['B772'];
     if (q.includes('321')) return MODEL_PHOTO_CATALOG['A321'];
     if (q.includes('PHENOM') || q.includes('300')) return MODEL_PHOTO_CATALOG['E55P'];
-    if (q.includes('GLOBAL') || q.includes('7500')) return MODEL_PHOTO_CATALOG['GL75'];
-    if (q.includes('PRAETOR') || q.includes('500')) return MODEL_PHOTO_CATALOG['P500'];
+    if (q.includes('GLOBAL') || q.includes('7500') || q.includes('GL75')) return MODEL_PHOTO_CATALOG['GL75'];
+    if (q.includes('PRAETOR') || q.includes('500') || q.includes('E545')) return MODEL_PHOTO_CATALOG['P500'];
     if (q.includes('GULFSTREAM') || q.includes('650')) return MODEL_PHOTO_CATALOG['GLF6'];
     return {
         url: 'https://t.plnspttrs.net/47373/1015232_3577405127_280.jpg',

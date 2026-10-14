@@ -1697,43 +1697,104 @@ html, body {
     line-height: 1.2;
 }
 
-/* Responsive adjustments */
+/* ========================================================
+   Mobile & Tablet Responsive Layout (Flightradar24 Side Panel UX)
+   ======================================================== */
 @media (max-width: 860px) {
+    :root {
+        --sidebar-width: min(390px, 84vw);
+    }
+
     .app-layout {
-        flex-direction: column-reverse;
-    }
-    
-    .sidebar {
-        width: 100%;
-        height: 50vh;
-        border-right: none;
-        border-top: 1px solid var(--border-color);
-    }
-    
-    .map-container {
-        height: 50vh;
-    }
-
-    .mobile-only {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
         display: flex;
+        flex-direction: row;
     }
 
+    /* Full-screen map on mobile behind the side panel */
+    .map-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100% !important;
+        height: 100dvh !important;
+        z-index: 1;
+    }
+
+    /* Floating map controls positioned above bottom edge */
+    .map-controls-floating {
+        bottom: 24px !important;
+        right: 14px !important;
+        z-index: 25;
+    }
+
+    /* Flightradar24 Left Side Panel Drawer on mobile & tablet */
+    .sidebar {
+        position: absolute !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: auto !important;
+        width: min(390px, 84vw) !important;
+        max-width: 84vw !important;
+        height: 100% !important;
+        height: 100dvh !important;
+        max-height: 100% !important;
+        background: rgba(10, 15, 29, 0.96) !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
+        border-radius: 0 !important;
+        border-top: none !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+        box-shadow: 10px 0 35px rgba(0, 0, 0, 0.65) !important;
+        z-index: 30 !important;
+        transform: translateX(0) !important;
+        margin-left: 0 !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden;
+    }
+
+    /* When sidebar is collapsed on mobile / tablet */
+    .app-layout.sidebar-collapsed .sidebar {
+        transform: translateX(-100%) !important;
+        margin-left: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* Edge toggle tab button - stays visible & docked nicely */
+    .sidebar-edge-toggle {
+        display: flex !important;
+        position: fixed !important;
+        top: 50% !important;
+        left: min(390px, 84vw) !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 35 !important;
+        width: 32px;
+        height: 32px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.55) !important;
+    }
+
+    .app-layout.sidebar-collapsed .sidebar-edge-toggle {
+        left: 16px !important;
+        transform: translate(-50%, -50%) !important;
+    }
+
+    .sidebar-view,
     .flight-detail-view,
     .selected-jet-card {
-        padding: 12px;
-    }
-
-    .app-layout.sidebar-collapsed .sidebar {
-        margin-left: 0;
-        margin-bottom: -50vh;
-        height: 0;
-        transform: translateY(100%);
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    .app-layout.sidebar-collapsed .map-container {
-        height: 100vh;
+        padding: 14px 14px 36px !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
     }
 }
 
@@ -1960,12 +2021,6 @@ body.light-theme .app-layout.sidebar-collapsed .sidebar-edge-toggle {
     background: #ffffff;
     border-color: rgba(0, 0, 0, 0.2);
     color: #0f172a;
-}
-
-@media (max-width: 860px) {
-    .sidebar-edge-toggle {
-        display: none !important;
-    }
 }
 
 /* Active Pill State */
