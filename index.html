@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0f1d">
+    <meta name="description" content="Live Private Jet & VIP Aircraft Tracker — Real-time tracking, flight paths, and status.">
+    <title>JetWatch | Live Private Jet Tracker</title>
+    
+    <!-- PWA & Mobile Icons -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="JetWatch">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- MapLibre GL for Free Interactive Vector Maps -->
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css">
+    <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+
+    <!-- App Styles -->
+    <link rel="stylesheet" href="styles.css?v=39">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar / Panel (Unified Left Drawer) -->
+        <aside class="sidebar" id="sidebar">
+            <!-- View 1: Fleet Watchlist View -->
+            <div class="sidebar-view fleet-view" id="fleet-view">
+                <header class="sidebar-header">
+                    <div class="brand">
+                        <div class="brand-logo">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.3c.4-.2.6-.6.5-1.1z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h1>JetWatch</h1>
+                            <span class="brand-subtitle">Live VIP Aircraft Tracker</span>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button id="add-plane-btn" class="btn btn-primary" title="Add Aircraft">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                            <span>Add Jet</span>
+                        </button>
+                        <button id="notify-btn" class="icon-btn" title="Enable Takeoff Alerts" aria-label="Alerts">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                        </button>
+                        <button id="refresh-btn" class="icon-btn" title="Refresh Live Data" aria-label="Refresh">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.19"/></svg>
+                        </button>
+                        <button id="settings-btn" class="icon-btn" title="Settings & Map Options" aria-label="Settings">
+                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Stats Bar -->
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-value" id="stat-total">0</span>
+                        <span class="stat-label">Tracked</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value stat-air" id="stat-airborne">0</span>
+                        <span class="stat-label">Live</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="stat-ground">0</span>
+                        <span class="stat-label">On Ground</span>
+                    </div>
+                    <div class="stat-status">
+                        <span class="pulse-dot"></span>
+                        <span id="live-indicator-text">Live ADS-B</span>
+                    </div>
+                </div>
+
+                <!-- Search / Filter -->
+                <div class="search-box">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <input type="text" id="search-input" placeholder="Search by tail, operator, or callsign...">
+                </div>
+
+                <!-- Fleet Filter Tags -->
+                <div class="fleet-filter-bar">
+                    <button class="filter-pill active" data-filter="all">All</button>
+                    <button class="filter-pill" data-filter="air">Live</button>
+                    <button class="filter-pill" data-filter="helo">Helicopters</button>
+                    <button class="filter-pill" data-filter="jets">Jets</button>
+                </div>
+
+                <!-- Aircraft List -->
+                <div class="aircraft-list-container">
+                    <div id="aircraft-list" class="aircraft-list">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="sidebar-footer">
+                    <p>Live ADS-B transponder tracking · Unfiltered</p>
+                </footer>
+            </div>
+
+            <!-- View 2: Flightradar24 Selected Flight Drawer (Lives inside the Left Drawer!) -->
+            <div class="sidebar-view flight-detail-view" id="selected-card" style="display: none;">
+                <!-- Top Nav Bar: Back to Fleet & Close -->
+                <div class="detail-nav-bar">
+                    <button id="back-to-fleet-btn" class="nav-back-btn" title="Back to Fleet Watchlist">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+                        <span>Fleet Watchlist</span>
+                    </button>
+                    <button id="close-selected-btn" class="close-card-btn" aria-label="Close">✕</button>
+                </div>
+
+                <!-- Flight Ident Header -->
+                <div class="selected-jet-header fr24-header">
+                    <div class="fr24-header-top">
+                        <div class="fr24-ident-row">
+                            <h2 id="sel-tail" class="fr24-ident">LXJ379</h2>
+                            <span id="sel-callsign-pill" class="fr24-pill pill-callsign">LXJ379</span>
+                            <span id="sel-type-pill" class="fr24-pill pill-type">E55P</span>
+                            <span id="sel-country-badge" class="fr24-country-badge">USA</span>
+                            <span id="sel-badge" class="badge badge-air">Live</span>
+                        </div>
+                        <div class="fr24-sub-row">
+                            <span id="sel-name" class="fr24-operator">Flexjet</span>
+                            <span class="fr24-dot-sep">•</span>
+                            <span id="sel-model-short" class="fr24-aircraft-model">Phenom 300</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aircraft Photo Banner -->
+                <div id="sel-photo-container" class="fr24-photo-container" style="display: none;">
+                    <div class="fr24-photo-wrap">
+                        <img id="sel-photo-img" class="fr24-photo-img" src="" alt="Aircraft Photo" loading="lazy">
+                        <div class="fr24-photo-credit">
+                            <span id="sel-photo-photographer">© Photographer</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Route Display -->
+                <div id="sel-route-container" class="sel-route-container fr24-route-container" hidden>
+                    <div class="fr24-route-row">
+                        <div class="fr24-airport-col origin">
+                            <span class="fr24-iata" id="sel-orig-code">JFK</span>
+                            <span class="fr24-city" id="sel-orig-city">NEW YORK</span>
+                            <span class="fr24-tz" id="sel-orig-tz">EDT (UTC -04:00)</span>
+                        </div>
+                        <div class="fr24-center-badge-wrap">
+                            <div class="fr24-center-badge" id="route-tilt-badge" title="Flight Direction & Pitch">
+                                <svg id="route-plane-tilt-icon" class="fr24-plane-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="fr24-airport-col dest">
+                            <span class="fr24-iata" id="sel-dest-code">TLV</span>
+                            <span class="fr24-city" id="sel-dest-city">TEL AVIV</span>
+                            <span class="fr24-tz" id="sel-dest-tz">IDT (UTC +03:00)</span>
+                        </div>
+                    </div>
+
+                    <!-- 2x2 Times Matrix -->
+                    <div class="fr24-times-grid">
+                        <div class="fr24-time-cell dep-sched">
+                            <span class="time-label">SCHEDULED</span>
+                            <span class="time-value" id="sel-dep-sched">--:--</span>
+                        </div>
+                        <div class="fr24-time-cell arr-sched">
+                            <span class="time-label">SCHEDULED</span>
+                            <span class="time-value" id="sel-arr-sched">--:--</span>
+                        </div>
+                        <div class="fr24-time-cell dep-act">
+                            <span class="time-label">ACTUAL</span>
+                            <span class="time-value" id="sel-dep-act">--:--</span>
+                        </div>
+                        <div class="fr24-time-cell arr-est">
+                            <span class="time-label">ESTIMATED</span>
+                            <span class="time-value" id="sel-arr-est"><span class="pulse-dot-green"></span>--:--</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="flight-timeline-box fr24-timeline-box" id="flight-timeline-box">
+                        <div class="fr24-timeline-bar-bg">
+                            <div class="fr24-timeline-bar-fill" id="timeline-progress-fill" style="width: 0%;"></div>
+                            <div class="fr24-timeline-plane-indicator" id="timeline-plane-indicator" style="left: 0%;">
+                                <svg class="timeline-plane-svg" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="fr24-timeline-labels">
+                            <span class="fr24-timeline-sub" id="timeline-elapsed">-- NM, -- ago</span>
+                            <span class="fr24-timeline-sub" id="timeline-remaining">-- NM, in --</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FR24 Signature Blue Accordion: Aircraft Details & Telemetry -->
+                <div class="fr24-accordion" id="acc-specs">
+                    <button class="fr24-acc-btn active" id="acc-btn-specs" type="button">
+                        <div class="acc-title-wrap">
+                            <svg class="acc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.3c.4-.2.6-.6.5-1.1z"/></svg>
+                            <span class="acc-title">Aircraft Details & Telemetry</span>
+                        </div>
+                        <svg class="acc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                    <div class="fr24-acc-body" id="acc-body-specs">
+                        <div class="selected-jet-body">
+                            <div class="sel-stat">
+                                <span class="label">Aircraft</span>
+                                <span id="sel-model" class="val">--</span>
+                            </div>
+                            <div class="sel-stat">
+                                <span class="label">Registration</span>
+                                <span id="sel-reg-val" class="val">--</span>
+                            </div>
+                            <div class="sel-stat">
+                                <span class="label">Altitude</span>
+                                <span id="sel-alt" class="val">--</span>
+                            </div>
+                            <div class="sel-stat">
+                                <span class="label">Ground Speed</span>
+                                <span id="sel-speed" class="val">--</span>
+                            </div>
+                            <div class="sel-stat">
+                                <span class="label">Track / Heading</span>
+                                <span id="sel-heading" class="val">--</span>
+                            </div>
+                            <div class="sel-stat">
+                                <span class="label">Vertical Rate</span>
+                                <span id="sel-vrate" class="val">--</span>
+                            </div>
+                            <div class="sel-stat">
+                                <span class="label">Callsign</span>
+                                <span id="sel-callsign" class="val">--</span>
+                            </div>
+                            <div class="sel-stat">
+                                <span class="label">Squawk</span>
+                                <span id="sel-squawk" class="val">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FR24 Signature Blue Accordion: Recent Flights (Flight History) -->
+                <div class="fr24-accordion" id="acc-history">
+                    <button class="fr24-acc-btn active" id="acc-btn-history" type="button">
+                        <div class="acc-title-wrap">
+                            <svg class="acc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                            <span class="acc-title" id="acc-history-title">Recent Flights</span>
+                        </div>
+                        <svg class="acc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                    <div class="fr24-acc-body" id="acc-body-history">
+                        <div class="fr24-history-year-bar" id="acc-history-year">Year 2026</div>
+                        <div class="fr24-history-list" id="acc-history-list">
+                            <div class="hist-empty-state">Select an aircraft to view recent flight log</div>
+                        </div>
+                        <div id="acc-history-more-wrap"></div>
+                    </div>
+                </div>
+
+                <!-- FR24 Signature Blue Accordion: Live ATC Radio -->
+                <div class="fr24-accordion" id="acc-atc">
+                    <button class="fr24-acc-btn active" id="acc-btn-atc" type="button">
+                        <div class="acc-title-wrap">
+                            <!-- Crisp Vector Headset Icon (No Emojis!) -->
+                            <svg class="acc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+                            <span class="acc-title">Live ATC Radio Tuner</span>
+                        </div>
+                        <svg class="acc-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                    <div class="fr24-acc-body" id="acc-body-atc">
+                        <div id="atc-radio-panel" class="atc-radio-panel">
+                            <div class="atc-radio-header">
+                                <span id="atc-status-badge" class="atc-status-badge standby">STANDBY</span>
+                                <div class="atc-airport-tabs">
+                                    <button id="atc-tab-orig" class="atc-airport-tab active" data-target="orig">
+                                        <span class="tab-role">DEP</span>
+                                        <span id="atc-tab-orig-code" class="tab-code">---</span>
+                                    </button>
+                                    <button id="atc-tab-dest" class="atc-airport-tab" data-target="dest">
+                                        <span class="tab-role">ARR</span>
+                                        <span id="atc-tab-dest-code" class="tab-code">---</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="atc-radio-body">
+                                <div class="atc-display-row">
+                                    <div class="atc-lcd-display">
+                                        <span class="atc-lcd-label" id="atc-active-channel-label">TOWER</span>
+                                        <span class="atc-lcd-freq" id="atc-active-freq-val">---.---</span>
+                                        <span class="atc-lcd-unit">MHz</span>
+                                    </div>
+                                    <div class="atc-waveform-container" id="atc-waveform">
+                                        <div class="atc-wave-bar bar-1"></div>
+                                        <div class="atc-wave-bar bar-2"></div>
+                                        <div class="atc-wave-bar bar-3"></div>
+                                        <div class="atc-wave-bar bar-4"></div>
+                                        <div class="atc-wave-bar bar-5"></div>
+                                    </div>
+                                </div>
+
+                                <div class="atc-channels-row" id="atc-channels-list"></div>
+
+                                <div class="atc-controls-row">
+                                    <button id="atc-play-btn" class="atc-play-btn">
+                                        <svg class="atc-play-svg" id="atc-play-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 9-14 9V3z"/></svg>
+                                        <span id="atc-play-text">LISTEN LIVE</span>
+                                    </button>
+                                    <div class="atc-volume-box">
+                                        <!-- Crisp Speaker SVG (No Emoji!) -->
+                                        <svg class="atc-vol-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                                        <input type="range" id="atc-volume-slider" min="0" max="1" step="0.05" value="0.8">
+                                    </div>
+                                </div>
+
+                                <div id="atc-notice-banner" class="atc-notice-banner" style="display: none;">
+                                    <!-- Crisp Info Circle SVG (No Emoji!) -->
+                                    <svg class="atc-notice-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                    <span id="atc-notice-text">Official Published Frequencies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Map Area -->
+        <main class="map-container">
+            <div id="map"></div>
+
+            <!-- Floating Map Controls (Bottom-Right: Zoom & Location) -->
+            <div class="map-controls-bottom-right" id="map-controls-group">
+                <div class="map-ctrl-stack">
+                    <button id="zoom-in-btn" class="map-ctrl-btn" title="Zoom In" aria-label="Zoom In">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <button id="zoom-out-btn" class="map-ctrl-btn" title="Zoom Out" aria-label="Zoom Out">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                    <div class="map-ctrl-divider"></div>
+                    <button id="recenter-btn" class="map-ctrl-btn" title="Fit All Active Aircraft" aria-label="Fit Planes">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+                    </button>
+                    <button id="my-location-btn" class="map-ctrl-btn" title="Center on My Location" aria-label="Near Me">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+                    </button>
+                    <button id="reset-view-btn" class="map-ctrl-btn" title="Reset Map Overview" aria-label="Overview">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Floating Edge Chevron Toggle (Collapses / Expands Sidebar Panel) -->
+            <button id="sidebar-edge-toggle" class="sidebar-edge-toggle" title="Toggle Fleet Panel" aria-label="Toggle Fleet Panel">
+                <svg class="chevron-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m15 18-6-6 6-6"/>
+                </svg>
+            </button>
+        </main>
+    </div>
+
+    <!-- Modal: Add Aircraft -->
+    <div id="add-modal" class="modal-backdrop" hidden>
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Add Aircraft to Watchlist</h2>
+                <button id="close-modal-btn" class="modal-close">&times;</button>
+            </div>
+            <form id="add-plane-form">
+                <div class="form-group">
+                    <label for="input-tail">Tail Number or Flight Callsign *</label>
+                    <input type="text" id="input-tail" placeholder="e.g. N787FZ, 4X-EDC, 9H-VISTA, DAL887" required autofocus autocomplete="off">
+                    <div id="tail-lookup-status" class="lookup-status-pill" style="display: none;"></div>
+                    <small>Type any tail number, foreign registration, or flight callsign. Details auto-fill automatically.</small>
+                </div>
+                <div class="form-group">
+                    <label for="input-name">Owner / Operator / VIP Label</label>
+                    <input type="text" id="input-name" placeholder="Auto-fills (e.g. NetJets, EL AL, Delta)">
+                </div>
+                <div class="form-group">
+                    <label for="input-model">Aircraft Model</label>
+                    <input type="text" id="input-model" placeholder="Auto-fills (e.g. Boeing 787-9, Global 7500)">
+                </div>
+                <div class="form-group">
+                    <label for="input-icao">ICAO Hex Code (Auto-calculated)</label>
+                    <input type="text" id="input-icao" placeholder="Auto-calculated (e.g. 7380c2, 4d23ab)">
+                    <small>Auto-calculated from tail number. You can also customize or override if needed.</small>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancel-add-btn" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" id="submit-add-btn" class="btn btn-primary">Add to Tracker</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Aircraft -->
+    <div id="edit-modal" class="modal-backdrop" hidden>
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Edit Aircraft</h2>
+                <button id="close-edit-modal-btn" class="modal-close">&times;</button>
+            </div>
+            <form id="edit-plane-form">
+                <input type="hidden" id="edit-aircraft-id">
+                <div class="form-group">
+                    <label for="edit-tail">Tail Number / Registration</label>
+                    <input type="text" id="edit-tail" placeholder="e.g. N787FZ" required autocomplete="off">
+                    <div id="edit-tail-lookup-status" class="lookup-status-pill" style="display: none;"></div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-name">Owner / VIP Label</label>
+                    <input type="text" id="edit-name" placeholder="e.g. Client Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-model">Aircraft Model</label>
+                    <input type="text" id="edit-model" placeholder="e.g. Global 7500, G650ER">
+                </div>
+                <div class="form-group">
+                    <label for="edit-icao">ICAO Hex Code</label>
+                    <input type="text" id="edit-icao" placeholder="Auto-calculated or 6-char hex, e.g. aaa856">
+                    <small>Auto-calculated from tail number or custom 6-character hex.</small>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="cancel-edit-btn" class="btn btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Flight Route History -->
+    <div id="history-modal" class="modal-backdrop" hidden>
+        <div class="modal modal-history">
+            <div class="modal-header">
+                <div>
+                    <h2 id="history-modal-title">Flight Route History</h2>
+                    <span id="history-modal-sub" class="history-subtitle">Past flights & legs</span>
+                </div>
+                <button id="close-history-modal-btn" class="modal-close">&times;</button>
+            </div>
+            <div id="history-modal-content" class="history-content">
+                <!-- Dynamically populated past flights -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Settings & Preferences -->
+    <div id="settings-modal" class="modal-backdrop" hidden>
+        <div class="modal modal-settings">
+            <div class="modal-header">
+                <div>
+                    <h2>Settings & Preferences</h2>
+                    <span class="settings-subtitle">Customize map styles, alerts, and display options</span>
+                </div>
+                <button id="close-settings-modal-btn" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body settings-body">
+                <!-- Section 1: Map Style / Provider -->
+                <div class="settings-group">
+                    <h3 class="settings-group-title">Map Style</h3>
+                    <p class="settings-group-desc">Select your preferred interactive vector map layer</p>
+                    <div class="settings-map-styles-grid" id="settings-map-styles">
+                        <button class="style-choice-card active" data-style="voyager">
+                            <span class="style-choice-dot voyager-dot"></span>
+                            <div class="style-choice-info">
+                                <span class="style-choice-title">FR24 Terrain</span>
+                                <span class="style-choice-sub">Topography, roads & borders</span>
+                            </div>
+                            <span class="style-check-mark">✓</span>
+                        </button>
+                        <button class="style-choice-card" data-style="satellite">
+                            <span class="style-choice-dot sat-dot"></span>
+                            <div class="style-choice-info">
+                                <span class="style-choice-title">Satellite Hybrid</span>
+                                <span class="style-choice-sub">Photographic satellite imagery</span>
+                            </div>
+                            <span class="style-check-mark">✓</span>
+                        </button>
+                        <button class="style-choice-card" data-style="dark">
+                            <span class="style-choice-dot dark-dot"></span>
+                            <div class="style-choice-info">
+                                <span class="style-choice-title">Dark Ops</span>
+                                <span class="style-choice-sub">High contrast night mode</span>
+                            </div>
+                            <span class="style-check-mark">✓</span>
+                        </button>
+                        <button class="style-choice-card" data-style="positron">
+                            <span class="style-choice-dot light-dot"></span>
+                            <div class="style-choice-info">
+                                <span class="style-choice-title">Silver Clean</span>
+                                <span class="style-choice-sub">Minimalist grayscale navigation</span>
+                            </div>
+                            <span class="style-check-mark">✓</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section 2: Appearance -->
+                <div class="settings-group">
+                    <h3 class="settings-group-title">Appearance</h3>
+                    <div class="settings-row">
+                        <div>
+                            <span class="setting-item-label">Color Theme</span>
+                            <span class="setting-item-desc">Flightradar24 Dark graphite vs Daylight Light</span>
+                        </div>
+                        <div class="theme-segmented-ctrl">
+                            <button id="theme-btn-dark" class="theme-seg-btn active" data-theme="dark">Dark</button>
+                            <button id="theme-btn-light" class="theme-seg-btn" data-theme="light">Light</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 3: Audio & Notifications -->
+                <div class="settings-group">
+                    <h3 class="settings-group-title">Audio & Notifications</h3>
+                    <div class="settings-row">
+                        <div>
+                            <span class="setting-item-label">Airbus Cabin PA Chime</span>
+                            <span class="setting-item-desc">Authentic two-tone chime when aircraft departs or lands</span>
+                        </div>
+                        <div class="setting-ctrl-wrap">
+                            <button id="test-chime-btn" class="btn btn-secondary btn-sm" type="button" title="Preview chime audio">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                                <span>Test Chime</span>
+                            </button>
+                            <label class="switch">
+                                <input type="checkbox" id="setting-sound-toggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="settings-row">
+                        <div>
+                            <span class="setting-item-label">Desktop Notifications</span>
+                            <span class="setting-item-desc">Browser alerts when tracked VIP jets takeoff or touch down</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="setting-notify-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Section 4: Units -->
+                <div class="settings-group">
+                    <h3 class="settings-group-title">Aviation Units</h3>
+                    <div class="settings-row">
+                        <div>
+                            <span class="setting-item-label">Speed Unit</span>
+                            <span class="setting-item-desc">Display speed in aviation knots or ground mph</span>
+                        </div>
+                        <div class="theme-segmented-ctrl" id="unit-speed-ctrl">
+                            <button class="unit-seg-btn active" data-unit="kts">Knots (kts)</button>
+                            <button class="unit-seg-btn" data-unit="mph">Miles/hr (mph)</button>
+                        </div>
+                    </div>
+                    <div class="settings-row">
+                        <div>
+                            <span class="setting-item-label">Altitude Unit</span>
+                            <span class="setting-item-desc">Display altitude in feet or meters</span>
+                        </div>
+                        <div class="theme-segmented-ctrl" id="unit-alt-ctrl">
+                            <button class="unit-seg-btn active" data-unit="ft">Feet (ft)</button>
+                            <button class="unit-seg-btn" data-unit="m">Meters (m)</button>
+                        </div>
+                    </div>
+                    <div class="settings-row">
+                        <div>
+                            <span class="setting-item-label">Time Display</span>
+                            <span class="setting-item-desc">Show flight times in airport local time, device time, or UTC</span>
+                        </div>
+                        <div class="theme-segmented-ctrl" id="setting-time-ctrl">
+                            <button class="unit-seg-btn active" data-time="airport">Airport Local</button>
+                            <button class="unit-seg-btn" data-time="device">Device Time</button>
+                            <button class="unit-seg-btn" data-time="utc">UTC (Zulu)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" id="done-settings-btn" class="btn btn-primary" style="width: 100%;">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="seatbelt-audio" src="cabin_chime.mp3" preload="auto"></audio>
+    <audio id="atc-stream-audio" preload="none"></audio>
+
+    <!-- Scripts -->
+    <script src="map.js?v=40"></script>
+    <script src="tracker.js?v=40"></script>
+</body>
+</html>
